@@ -12,7 +12,9 @@ kubectl run busybox --image=busybox  -o yaml --dry-run=client  -- /bin/sh -c   '
 
 kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run=client  -- /bin/sh -c   'while true;do echo amobee;sleep  5;done' > pod1.yaml
 
-
+rs : kubectl edit replicaset new-replica-set
+kubectl  get rs
+kubectl get rc
 
 kubectl logs  -f busybox -c busybox
 
