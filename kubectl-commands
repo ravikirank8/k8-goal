@@ -65,6 +65,32 @@ Note: You can also access it using the service name and namespace like this: db-
 
 
  ============================================================================================================
+ Services
+ 
+ https://kubernetes.io/docs/tasks/manage-kubernetes-objects/imperative-config/
+
+kubectl create deploy webserver  --image=nginx   --dry-run=client -o yaml
+kubectl expose deployment webserver --port=8080 --target-port=8080 --type=Nodeport --dry-run=client -o yaml
+
+iptables -n -t nat -L KUBE-SERVICES
+
+kubectl expose deployment simple-webapp-deployment   --target-port=8080  --port=8080 --type=NodePort --dry-run=client -o yaml > b.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080
+  selector:
+    name: simple-webapp
+ 
+ 
+ =================================================
+ 
  Lables and Selectors:
  ======================
  
