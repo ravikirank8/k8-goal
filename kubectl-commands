@@ -16,6 +16,8 @@ rs : kubectl edit replicaset new-replica-set
 kubectl  get rs
 kubectl get rc
 
+kubectl scale rs new-replica-set --replicas=2
+
 kubectl logs  -f busybox -c busybox
 
 kubectl exec busybox -c busybox -- ls
