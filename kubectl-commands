@@ -22,15 +22,24 @@ kubectl logs  -f busybox -c busybox
 
 kubectl exec busybox -c busybox -- ls
 ==================================================================
-Namespaces
+Namespaces ( pratice agin)
 ============
-kubectl get pods --namespace=kube-system
-
 kubectl create namespace mynamespace
 
-kubectl create -f pod-definition.yaml --namespace=dev
+kubectl get po -n research
 
-kubectl get pods --namespace=dev
+kubectl config set-context --current --namespace=prod
+
+kubectl run nginx --image=nginx --restart=Never -n mynamespace
+
+
+kubectl create -f pod-definition.yaml -n dev
+
+kubectl get pod -n kube-system
+
+kubectl create -f pod-definition.yaml --n dev
+
+kubectl get pods -n dev
 
 kubectl config view | grep namespaces
 
@@ -47,6 +56,13 @@ kubectl run nginx --image=nginx --restart=Never -n mynamespace
 
 kubectl get po --all-namespaces
 kubectl run nginx --image=nginx --restart=Never --port=80
+
+Since the blue application and the db-service are in different namespaces. 
+In this case, we need to use the service name along with the namespace to access the database. 
+The FQDN (fully Qualified Domain Name) for the db-service in this example would be db-service.dev.svc.cluster.local.
+
+Note: You can also access it using the service name and namespace like this: db-service.dev
+
 
  ============================================================================================================
  Lables and Selectors:
