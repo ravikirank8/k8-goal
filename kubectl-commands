@@ -198,6 +198,12 @@ Kubernetes Rolling:
 Check how the deployment rollout is going
 kubectl rollout status deploy nginx
 
+check max unavialbe below rollingstargey
+
+kubectl edit deploy nameofdeploy
+
+we change type: Recreate | RollingUpdate and set the image
+
 kubectl set image deploy nginx nginx=nginx:1.19.8
 
 kubectl edit deploy nginx
@@ -211,6 +217,8 @@ kubectl get deploy nginx
 kubectl get rs  # check that a new replica set has been created
 kubectl get po
 kubectl scale --replicas=7 rs nginx
+
+
 
 ==============================================================================================================
 
