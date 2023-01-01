@@ -283,6 +283,8 @@ kubectl create cm mycm --from-file=a.txt
 kubectl get cm
 kubectl describe cm mycm
 
+kubectl create configmap webapp-config-map --from-literal=APP_COLOR=darkblue
+
 kubectl create cm mycm --from-file=a.txt --dry-run=client -o yaml
 
 We see this using by creating it using test pod
