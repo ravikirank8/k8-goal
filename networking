@@ -1,3 +1,13 @@
+selector:
+    app: myapp
+ 
+labels:
+   app: myapp
+
+both  labels should be match for service for selector and label in pod/repicalset
+
+
+
 targetport: the port the container is listening on
 
 port number : port number exposed internally inside a cluster
