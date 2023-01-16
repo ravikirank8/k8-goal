@@ -127,4 +127,16 @@ This IP is stable and never changes in the service lifecycle(unless deleted expl
 kubectl expose deployment/mydemo --dry-run=client -o yaml
 
 =========
+Ingress
+
+To configure Ingress. The solution you deploy is called as an Ingress Controller. And
+the set of rules you configure is called as Ingress Resources. Ingress resources are
+created using definition files like the ones we used to create PODs, Deployments and
+services earlier in this course.
+
+Now remember a kubernetes cluster does NOT come with an Ingress Controller by
+default. If you setup a cluster following the demos in this course, you won’t have an
+Now
+
+
 
