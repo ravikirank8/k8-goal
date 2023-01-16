@@ -31,6 +31,11 @@ Node port must be in the range of 30000–32767. Manually allocating a port to t
  Each cloud provider (AWS, Azure, GCP,) has its own native load balancer implementation. The cloud provider will create a load balancer, which then automatically routes requests to your Kubernetes Service.
 
 
+Refer doc of nodeport - type search  services in kubernetes doc and we can refer for Nodeport and loadbalancer yamls and clusterip is default and can be generated
+by below command
+
+kubectl run nginx --image=nginx  --port=80 --expose --dry-run=client -o yaml
+
 
 kubectl create  deploy web  --image=nginx --dry-run=client -o yaml > web.yaml
 
