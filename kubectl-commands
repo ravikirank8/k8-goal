@@ -32,6 +32,10 @@ Namespaces ( pratice agin)
 ============
 kubectl create namespace mynamespace
 
+kubectl get namespace
+kubectl config view | grep namespace
+kubectl config set-context --current --namespace=prod
+
 kubectl get po -n research
 
 kubectl config set-context --current --namespace=prod
