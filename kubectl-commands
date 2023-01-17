@@ -313,3 +313,5 @@ kubectl create secret generic sec --from-file=ssh-private=/root/.ssh/known_hosts
 
 kubectl create secret generic sec --from-file=usercred=ravikiran --from-literal=passphrase=ravikiran300 --dry-run=client -o yaml
 
+==============================
+
