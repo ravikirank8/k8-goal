@@ -303,3 +303,16 @@ spec:
            name: pay-service
            port:
             number: 8282
+            
+            =====================================
+            
+ Network policies
+ 
+ We will start with a simple example of a traffic through a
+web, app and database server. So you have a web server serving front-end to users,
+an app server serving backend API’s and a database server. The user sends in a
+request to the web server at port 80. The web server then sends a request to the API
+server at port 5000 in the backend. The API server then fetches data from the
+database server at port 3306. And then sends the data back to the user. A very
+simple setup.
+           
