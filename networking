@@ -196,3 +196,110 @@ spec:
               number: 8080
         path: /stream
         pathType: Prefix
+        
+        
+        ===========
+        
+        You are requested to add a new path to your ingress to make the food delivery application available to your customers.
+
+Make the new application available at /eat
+
+
+Ingress: ingress-wear-watch
+Path: /eat
+Backend Service: food-service
+Backend Service Port: 8080
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: ingress-wear-watch
+  namespace: app-space
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: wear-service
+            port: 
+              number: 8080
+        path: /wear
+        pathType: Prefix
+      - backend:
+          service:
+            name: video-service
+            port: 
+              number: 8080
+        path: /stream
+        pathType: Prefix
+      - backend:
+          service:
+            name: food-service
+            port: 
+              number: 8080
+        path: /eat
+        pathType: Prefix
+        
+        
+        
+        
+        
+        
+        ===================================================
+        
+        
+        You are requested to make the new application available at /pay.
+
+Identify and implement the best approach to making this application available on the ingress controller
+and test to make sure its working. Look into annotations: rewrite-target as well.
+
+Ingress Created
+Path: /pay
+Configure correct backend service
+Configure correct backend port
+
+Create a new Ingress for the new pay application in the critical-space namespace.
+Use the command kubectl get svc -n critical-space to know the service and port details.
+
+Name:              pay-service
+Namespace:         critical-space
+Labels:            <none>
+Annotations:       <none>
+Selector:          app=webapp-pay
+Type:              ClusterIP
+IP Family Policy:  SingleStack
+IP Families:       IPv4
+IP:                10.105.246.224
+IPs:               10.105.246.224
+Port:              <unset>  8282/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.244.0.11:8080
+Session Affinity:  None
+Events:            <none>
+
+you need take port in svc and put in the backend port number
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: critical-space
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /pay
+        pathType: Prefix
+        backend:
+          service:
+           name: pay-service
+           port:
+            number: 8282
