@@ -315,4 +315,9 @@ request to the web server at port 80. The web server then sends a request to the
 server at port 5000 in the backend. The API server then fetches data from the
 database server at port 3306. And then sends the data back to the user. A very
 simple setup.
-           
+      
+The NGINX Ingress Controller requires a ConfigMap object. Create a ConfigMap object in the ingress-space
+kubectl create configmap nginx-configuration --namespace ingress-space
+
+The NGINX Ingress Controller requires a ServiceAccount. Create a ServiceAccount in the ingress-space namespace
+kubectl create serviceaccount ingress-serviceaccount --namespace ingress-space
