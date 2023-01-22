@@ -13,6 +13,9 @@ The drain command will not work in this case. To forcefully drain the node we no
 
 if pods are not part of replicaset it will lost forever after you fire a command
 kubectl drain node01 --ignore-daemonsets --force
+
+Do not drain node01, instead use the kubectl cordon node01 command. 
+This will ensure that no new pods are scheduled on this node and the existing pods will not be affected by this operation.
 ===================================================================
 1)
 This lab tests your skills on upgrading a kubernetes cluster. We have a production cluster with applications running on it. Let us explore the setup first.
