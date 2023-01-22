@@ -1,0 +1,6 @@
+kubelet should update manually 
+
+apiserver should be in higher version when you upgrades
+kubelet and kube-proxy and x-2 lower version
+others should should be x-1 version
+kubelet can x+1 or x-1 version
