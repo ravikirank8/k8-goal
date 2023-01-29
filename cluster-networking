@@ -36,3 +36,7 @@ ip route show default
 
 on which port the component running on
  netstat -plnt | grep -i kube-scheduler
+ 
+ Notice that ETCD is listening on two ports. Which of these have more client connections established?
+ netstat -plnt | grep -i etcd
+ netstat -anp | grep etcd | grep 2381 | wc -l
