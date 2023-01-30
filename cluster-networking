@@ -51,3 +51,62 @@ ls /etc/cni/net.d/
 
 What binary executable file will be run by kubelet after a container and its associated namespace are created?
 Look at the type field in file /etc/cni/net.d/10-flannel.conflist.
+
+How many weave agent deployed on cluster
+kubectl get pods -n kube-system
+
+identiy bridge network created by weave
+ip link
+
+check ip address range created by weave 
+ip addr show weave
+
+check default gateway and look the weave at end of link ip src:  ip route
+
+
+What network range are the nodes in the cluster part of?
+short answer: ip addr show eth0
+lengthy answer:
+one way to do this is to make use of the ipcalc utility. If it is not installed, you can install it by running: apt update and the apt install ipcalc
+
+Then use it to determine the network range as shown below:
+
+First, find the Internal IP of the nodes.
+
+root@controlplane:~> ip a | grep eth0
+93657: eth0@if93658: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default 
+    inet 10.33.39.8/24 brd 10.33.39.255 scope global eth0
+
+root@controlplane:~>
+
+
+Next, use the ipcalc tool to see the network details:
+
+root@controlplane:~> ipcalc -b 10.33.39.8
+Address:   10.33.39.8           
+Netmask:   255.255.255.0 = 24   
+Wildcard:  0.0.0.255            
+=>
+Network:   10.33.39.0/24        
+HostMin:   10.33.39.1           
+HostMax:   10.33.39.254         
+Broadcast: 10.33.39.255         
+Hosts/Net: 254                   Class A, Private Internet
+
+root@controlplane:~>
+
+
+In this example, the network is 10.33.39.0/24. Note, this may vary for your lab so make sure to check for yourself.
+
+What is the range of IP addresses configured for PODs on this cluster?
+ip addr show weave
+The network is configured with weave. Check the weave pods logs using the command kubectl logs <weave-pod-name> weave -n kube-system and look for ipalloc-range.
+
+What is the IP Range configured for the services within the cluster?
+Inspect the setting on kube-api server by running on command cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep cluster-ip-range
+
+What type of proxy is the kube-proxy configured to use?
+Check the logs of the kube-proxy pods. Run the command: kubectl logs <kube-proxy-pod-name> -n kube-system
+
+How does this Kubernetes cluster ensure that a kube-proxy pod runs on all nodes in the cluster?
+kubectl get ds -n kube-system
