@@ -1,0 +1,47 @@
+What is the IP of the CoreDNS server that should be configured on PODs to resolve services?
+kubectl get svc -n kube-system
+
+you can configuration of coredns here kubectl describe  deploy coredns  -n kube-system 
+/etc/coredns/Corefile
+
+Troubleshooting question and import question
+
+We just deployed a web server - webapp - that accesses a database mysql - server. 
+However the web server is failing to connect to the database server. Troubleshoot and fix the issue.
+
+They could be in different namespaces. First locate the applications. 
+The web server interface can be seen by clicking the tab Web Server at the top of your terminal.
+
+Web Server: webapp
+
+Uses the right DB_Host name
+
+Set the DB_Host environment variable to use mysql.payroll.
+Run the command: kubectl edit deploy webapp and correct the DB_Host value.
+
+Run the command: kubectl edit deploy webapp and correct the DB_Host value.
+controlplane ~ ➜  kubectl get po -n payroll
+NAME    READY   STATUS    RESTARTS   AGE
+mysql   1/1     Running   0          23m
+web     1/1     Running   0          52m
+
+controlplane ~ ➜  kubectl get deploy webapp 
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+webapp   1/1     1            1           25m
+
+spec:
+      containers:
+      - env:
+        - name: DB_Host
+          value: mysql.payroll
+        - name: DB_User
+          value: root
+        - name: DB_Password
+          value: paswrd
+        image: mmumshad/simple-webapp-mysql
+        imagePullPolicy: Always
+        
+        
+        From the hr pod nslookup the mysql service and redirect the output to a file /root/CKA/nslookup.out
+        kubectl exec -it hr -- nslookup mysql.payroll > /root/CKA/nslookup.out
+
