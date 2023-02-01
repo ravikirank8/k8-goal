@@ -1,3 +1,66 @@
+Questions:
+
+Configure a volume to store these logs at /var/log/webapp on the host.
+
+Use the spec provided below.
+Name: webapp
+Image Name: kodekloud/event-simulator
+Volume HostPath: /var/log/webapp
+Volume Mount: /log
+
+copy this from cka docs https://kubernetes.io/docs/concepts/storage/volumes/
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+    volumeMounts:
+    - mountPath: /log
+      name: log-volume
+
+  volumes:
+  - name: log-volume
+    hostPath:
+      # directory location on host
+      path: /var/log/webapp
+      # this field is optional
+      type: Directory
+      
+      =====================
+      pv and pvc accessmode need to match properly. check size of volumes. copy k8 docs be careful of stogradeclass:maual remove it
+      creating a pv 
+      
+      apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-log
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/pv/log"
+      
+      
+      
+Let us claim some of that storage for our application. Create a Persistent Volume Claim with the given specification.
+
+Volume Name: claim-log-1
+Storage Request: 50Mi
+Access Modes: ReadWriteOnce
+
+====================
+
 why u need volumes in kubernetes
  u have database application what need to store data.
  has u know about deployments and replicaset and  it will create new pods when pods deletes or restarts.so the data is lost.
