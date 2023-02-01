@@ -1,0 +1,254 @@
+why u need volumes in kubernetes
+ u have database application what need to store data.
+ has u know about deployments and replicaset and  it will create new pods when pods deletes or restarts.so the data is lost.
+ so in order to store this data you need volumes.
+ 
+ In this exercise, you create a hostPath PersistentVolume. Kubernetes supports hostPath for development and testing on a single-node cluster.
+ A hostPath PersistentVolume uses a file or directory on the Node to emulate network-attached storage.
+ 
+ In a production cluster, you would not use hostPath. 
+ Instead a cluster administrator would provision a network resource like a Google Compute Engine persistent disk, an NFS share, 
+ or an Amazon Elastic Block Store volume.
+ Cluster administrators can also use StorageClasses to set up dynamic provisioning.
+ 
+ 
+requirments for storage:
+1)storage should be independent pods lifecycle.
+2)storage should be accessable to all nodes
+3)storage should survive cluster crashes
+
+
+
+persistance voulme is just like other resource like memory,ram and cpu 
+
+all the you define on your volumes differs from cloud to cloud
+
+it is recommned to have remote storge than local stoarge becuase it will available to all nodes with in cluster.
+administrator will create pv
+devlopers who uses pv will create pvc
+u just claiming what ever persistant volumes u have.
+
+The next step is to create a PersistentVolumeClaim. Pods use PersistentVolumeClaims to request physical storage.
+In this exercise, you create a PersistentVolumeClaim that requests a volume of at least three gibibytes that can provide read-write access for at least one Node.
+
+Here is the configuration file for the PersistentVolumeClaim:
+
+
+storage class is a way to provision persistent volumes dynamically
+in yaml you define in remote persistant volume and claim it.
+
+sudo mkdir /mnt/data
+
+ReadWriteOnce, which means the volume can be mounted as read-write by a single Node.
+
+It defines the StorageClass name manual for the PersistentVolume, which will be used to bind PersistentVolumeClaim requests to this PersistentVolume.
+
+When a user is done with their volume, they can delete the PVC objects from the API that allows reclamation of the resource. The reclaim policy for a PersistentVolume tells the cluster what to do with the volume after it has been released of its claim.
+Currently, volumes can either be Retained, Recycled, or Deleted.
+
+Reclaim Policy
+
+Current reclaim policies are:
+
+    Retain -- manual reclamation
+    Recycle -- basic scrub (rm -rf /thevolume/*)
+    Delete -- associated storage asset such as AWS EBS, GCE PD, Azure Disk, or OpenStack Cinder volume is deleted
+
+Currently, only NFS and HostPath support recycling. AWS EBS, GCE PD, Azure Disk, and Cinder volumes support deletion.
+
+
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+
+sudo sh -c "echo 'Hello from Kubernetes storage' > /mnt/data/index.html"
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+
+=====================================================================================
+
+
+  
+  kubectl explain pod.spec.volumes
+  
+  An emptyDir volume is first created when a Pod is assigned to a Node and exists as long  as that Pod is running on that node.
+. As the name says, it is initially empty. All Containers in the same Pod can read and write in the same emptyDir volume.
+. When a Pod is restarted or removed, the data in the emptyDir is lost forever.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: ngnix1
+  name: ngnix1
+spec:
+  containers:
+  - image: nginx
+    name: ngnix
+    volumeMounts:
+      - mountPath: /test-pd
+        name: test-volume
+  volumes:
+  - name: test-volume
+    hostPath:
+    path: /data
+    
+    
+  sudo apt-get update
+sudo apt-get install procps
+ps aux
+
+
+
+. A hostPath volume mounts a file or directory from the node's filesystem into the Pod.
+You can specify whether the file/directory must already exist on the node or should be created on pod startup.
+You can do it using a type attribute in the config file:
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: ngnix
+  name: ngnix
+spec:
+  containers:
+  - image: nginx
+    name: ngnix
+    volumeMounts:
+      - mountPath: /test
+        name: test
+  volumes:
+      - name: test
+        emptyDir: {}
+        
+       
+
+
+
+. An emptyDir volume is first created when a Pod is assigned to a Node and exists as long  as that Pod is running on that node.
+. As the name says, it is initially empty. All Containers in the same Pod can read and write in the same emptyDir volume.
+. When a Pod is restarted or removed, the data in the emptyDir is lost forever.
+
+. A hostPath volume mounts a file or directory from the node's filesystem into the Pod. You can specify whether the file/directory must already exist on the node or should be created on pod startup. You can do it using a type attribute in the config file:
+
+
+Persistent Volume (PV) is an abstraction for the physical storage device that you have attached to the cluster. Pods can use this storage space using Persistent Volume Claims (PVC).
+PV is independent of the lifecycle of the Pods. It means that data represented by a PV continue to exist as the cluster changes and as Pods are deleted and recreated.
+ PV is not Namespaced, it is available to whole cluster. i.e PV is accessible to all namespaces.
+
+ Kubernetes looks for a PV that meets the criteria defined in the PVC, and if there is one, it matches claim to PV.
+ PVC must be in same namespace as the Pod. For each Pod, a PVC makes a storage consumption request within a namespace.
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+    
+  
+. StorageClass provisions PV dynamically, when PVC claims it.
+
+. StorageClass allows dynamically provision volumes for an incoming claim.
+
+. StorageClass is used in conjunction with PVC that allow Pods to dynamically request a new storage.
+
+. StorageClass use provisioners that are specific to the storage platform or cloud provider to give Kubernetes access to the physical storage.
+
+
+
+
+Volumes
+ ======
+ volumeMounts:
+    - name: redis-storage
+      mountPath: /data/redis
+  volumes:
+  - name: redis-storage
+    emptyDir: {}
+    
+    
+ image: busybox
+    name: busybox
+    volumeMounts:
+    - mountPath: /test-pd
+      name: test-volume
+  volumes:
+  - name: test-volume
+    hostPath:
+      # directory location on host
+      path: /data
+      # this field is optional
+      type: DirectoryOrCreate
+
+
+=============================
+ 
+ 
+ Persistent Volume (PV) is an abstraction for the physical storage device that you have attached to the cluster. Pods can use this storage space using Persistent Volume Claims (PVC).
+ PV is an abstraction for the physical storage device that attached to the cluster. PV is used to manage durable storage which needs actual physical storage.
+ PV is independent of the lifecycle of the Pods. It means that data represented by a PV continue to exist as the cluster changes and as Pods are deleted and recreated.
+ PV is not Namespaced, it is available to whole cluster. i.e PV is accessible to all namespaces.
+
+ Kubernetes looks for a PV that meets the criteria defined in the PVC, and if there is one, it matches claim to PV.
+ PVC must be in same namespace as the Pod. For each Pod, a PVC makes a storage consumption request within a namespace.
+ 
+ apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data
+    
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  
