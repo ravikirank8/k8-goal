@@ -54,8 +54,12 @@ PolicyRule:
 
 Creating rolebinding
 
-kubectl create rolebinding dev-user-binding -n default --role=developer --user=dev-user
+controlplane ~ ✖ kubectl create rolebinding dev-user-binding -n default --role=developer --user=dev-user
 rolebinding.rbac.authorization.k8s.io/dev-user-binding created
+
+controlplane ~ ➜  kubectl get rolebinding
+NAME               ROLE             AGE
+dev-user-binding   Role/developer   2m57s
 
 controlplane ~ ➜  kubectl describe rolebinding
 Name:         dev-user-binding
@@ -68,6 +72,8 @@ Subjects:
   Kind  Name      Namespace
   ----  ----      ---------
   User  dev-user  
+
+
 
 
 ================
