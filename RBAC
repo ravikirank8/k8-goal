@@ -1,3 +1,76 @@
+
+Inspect the environment and identify the authorization modes configured on the cluster.
+ kubectl describe  po kube-apiserver-controlplane  -n kube-system
+Use the command kubectl describe pod kube-apiserver-controlplane -n kube-system and look for --authorization-mode
+
+ kubectl get roles
+ kubectl get roles -A
+ kubectl describe role kube-proxy -n kube-system
+ 
+ Which account is the kube-proxy role assigned to?
+kubectl describe rolebinding kube-proxy -n kube-system
+
+kubectl describe rolebinding kube-proxy -n kube-system
+
+A user dev-user is created. User's details have been added to the kubeconfig file. 
+Inspect the permissions granted to the user. Check if the user can list pods in the default namespace.
+
+kubectl get pods --as dev-user
+Use the --as dev-user option with kubectl to run commands as the dev-user
+Error from server (Forbidden): pods is forbidden: User "dev-user" cannot list resource "pods" in API group "" in the namespace "default"
+Here he doesn't have the permission to get the pods
+
+===
+Improtant 
+
+Create the necessary roles and role bindings required for the dev-user to create, list and delete pods in the default namespace.
+
+Use the given spec:
+Role: developer
+Role Resources: pods
+Role Actions: list
+Role Actions: create
+Role Actions: delete
+RoleBinding: dev-user-binding
+RoleBinding: Bound to dev-user
+
+==>
+controlplane ~ ➜  kubectl create role developer -n default --verb=list,create,delete --resource=pods
+role.rbac.authorization.k8s.io/developer created
+
+controlplane ~ ➜  kubectl get role
+NAME        CREATED AT
+developer   2023-02-01T10:22:09Z
+
+controlplane ~ ➜  kubectl describe role developer
+Name:         developer
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources  Non-Resource URLs  Resource Names  Verbs
+  ---------  -----------------  --------------  -----
+  pods       []                 []              [list create delete]
+  
+
+Creating rolebinding
+
+kubectl create rolebinding dev-user-binding -n default --role=developer --user=dev-user
+rolebinding.rbac.authorization.k8s.io/dev-user-binding created
+
+controlplane ~ ➜  kubectl describe rolebinding
+Name:         dev-user-binding
+Labels:       <none>
+Annotations:  <none>
+Role:
+  Kind:  Role
+  Name:  developer
+Subjects:
+  Kind  Name      Namespace
+  ----  ----      ---------
+  User  dev-user  
+
+
+================
 you will see that there is a default service account that exists already. For every namespace in kubernetes a
 service account named default is automatically created. Each namespace has its own . when pod is created it link defualt service account with token
 
@@ -28,5 +101,9 @@ Edit the deployment to change ServiceAccount from default to dashboard-sa.
 serviceAccountName: dashboard-sa
 
 other way kubectl set serviceaccount deploy/web-dashboard dashboard-sa
+
+kubectl create secret docker-registry private-reg-cred --docker-username=dock_user --docker-password=dock_password --docker-server=myprivateregistry.com:5000 --docker-email=dock_user@myprivateregistry.com
+
+The User ID defined in the securityContext of the POD is carried over to all the containers in the Pod
 
 
