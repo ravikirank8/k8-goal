@@ -1,0 +1,32 @@
+you will see that there is a default service account that exists already. For every namespace in kubernetes a
+service account named default is automatically created. Each namespace has its own . when pod is created it link defualt service account with token
+
+create a pod to link to service account 
+apiVersion:
+kind:
+metadata:
+spec:
+pod-definition.yml
+v1
+Pod
+name: my-kubernetes-dashboard
+containers:
+- name: my-kubernetes-dashboard
+image: my-kubernetes-dashboard
+serviceAccount: dashboard-sa
+
+automountServiceAccountToken : false
+kubectl create sa  dashboard-sa
+
+kubectl create token dashboard-sa
+
+
+you shouldn't have to copy and paste the token each time. The Dashboard application is programmed to read token from the secret mount location. However currently, the default service account is mounted. 
+Update the deployment to use the newly created ServiceAccount
+
+Edit the deployment to change ServiceAccount from default to dashboard-sa.
+serviceAccountName: dashboard-sa
+
+other way kubectl set serviceaccount deploy/web-dashboard dashboard-sa
+
+
