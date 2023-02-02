@@ -1,0 +1,46 @@
+Remove the taint on controlplane, which currently has the taint effect of NoSchedule.
+
+kubectl taint nodes controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+
+Taint and Toleration in Kubernetes are mechanisms to control how pods are scheduled on nodes.
+
+A taint is a property that can be assigned to a node, indicating that the node should not accept pods that do not tolerate the taint.(repel)
+
+A toleration is a property that can be assigned to a pod, indicating that the pod can run on a node that has a specific taint.
+
+The effect of taint and toleration on pods and nodes is that pods will only be scheduled on nodes that don't have taints that the pod's tolerations do not match.
+This allows administrators to designate certain nodes for special use cases
+(e.g. dedicated nodes for specific types of workloads), and ensures that pods are only scheduled where they are intended to run.
+==================
+
+
+In Kubernetes, NoSchedule, PreferNoSchedule, and NoExecute are taint effects that control how pods are scheduled on nodes.
+
+NoSchedule: This taint effect indicates that pods should not be scheduled on the node, and any existing pods will be evicted 
+if they do not have a matching toleration.
+
+PreferNoSchedule: This taint effect indicates that pods should not be scheduled on the node, but if a pod with a matching toleration already exists, 
+it will not be evicted.
+
+NoExecute: This taint effect indicates that pods should not be scheduled on the node and any existing pods will be evicted if they do not have a matching toleration.
+In addition, the node will not be used for new pod executions, even if the pods have matching tolerations.
+
+Tolerations are assigned to pods, and they define the taints that a pod can tolerate. 
+When a pod is created, the scheduler checks if there is a node available that does not have any taints that the pod cannot tolerate,
+and if found, the pod is scheduled on that node.
+
+
+=============
+
+In Kubernetes, taints and tolerations use two comparison operations: Exists and Equal.
+
+Exists: This comparison operator is used to check if a taint exists on a node.
+If a toleration with the Exists operator is specified for a pod, the pod will be scheduled on a node with any value for that taint key, as long as the key exists.
+
+Equal: This comparison operator is used to check if the value of a taint on a node matches the value specified in the toleration.
+If a toleration with the Equal operator is specified for a pod, the pod will be scheduled on a node only if the value of the taint on the node matches the value in the toleration.
+
+For example, if a node has a taint with key "environment" and value "production", and a pod has a toleration with key "environment", effect "NoSchedule",
+and operator "Equal", the pod will only be scheduled on the node if the value of the taint is "production". 
+If the toleration specifies the operator as "Exists", the pod will be scheduled on the node as long as the taint with key "environment" exists,
+regardless of its value.
