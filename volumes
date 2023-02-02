@@ -59,6 +59,59 @@ Volume Name: claim-log-1
 Storage Request: 50Mi
 Access Modes: ReadWriteOnce
 
+====
+
+pdate the webapp pod to use the persistent volume claim as its storage.
+
+Replace hostPath configured earlier with the newly created PersistentVolumeClaim.
+
+To delete the webapp pod first:
+
+$ kubectl delete po webapp
+Add --force flag in above command, if you would like to delete the pod without any delay.
+
+To create a new webapp pod with given properties as follows:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp
+spec:
+  containers:
+  - name: event-simulator
+    image: kodekloud/event-simulator
+    env:
+    - name: LOG_HANDLERS
+      value: file
+    volumeMounts:
+    - mountPath: /log
+      name: log-volume
+
+  volumes:
+  - name: log-volume
+    persistentVolumeClaim:
+      claimName: claim-log-1
+Then run the command kubectl create -f <file-name>.yaml to create a pod from the definition file.
+
+What is the Reclaim Policy set on the Persistent Volume pv-log?
+
+Try deleting the PVC and notice what happens.
+
+
+If the command hangs, you can use CTRL + C to get back to the bash prompt OR check the status of the pvc from another terminal
+Run the command: kubectl delete pvc claim-log-1 and kubectl get pvc. If the command hangs, you can use CTRL + C to get back to the bash prompt OR check the status of the pvc from another terminal.
+
+root@controlplane:~# kubectl delete pvc claim-log-1 
+persistentvolumeclaim "claim-log-1" deleted
+
+
+^C
+root@controlplane:~# kubectl get pvc
+NAME          STATUS        VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+claim-log-1   Terminating   pv-log   100Mi      RWX                           5m47s
+root@controlplane:~#
+
+
 ====================
 
 why u need volumes in kubernetes
