@@ -111,8 +111,115 @@ NAME          STATUS        VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AG
 claim-log-1   Terminating   pv-log   100Mi      RWX                           5m47s
 root@controlplane:~#
 
+storage class
 
+How many StorageClasses exist in the cluster right now?
+kubectl get sc
+
+What is the name of the Storage Class that does not support dynamic volume provisioning?
+The local-storage storage class makes use of the no-provisioner and currently does not support dynamic provisioning.
+Refer to the tab above the terminal (called Local Storage) to read more about it.
+
+Look for the storage class name that uses no-provisioner
+
+==========================
+
+Let's fix that. Create a new PersistentVolumeClaim by the name of local-pvc that should bind to the volume local-pv.
+
+Inspect the pv local-pv for the specs.
+
+check
+
+PVC: local-pvc
+
+Correct Access Mode?
+
+Correct StorageClass Used?
+
+PVC requests volume size = 500Mi?
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: local-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 500Mi
+      
+============================================
+Why is the PVC in a pending state despite making a valid request to claim the volume called local-pv?
+
+Inspect the PVC events.
+kubectl describe pvc local-pvc
+Name:          local-pvc
+Namespace:     default
+StorageClass:  local-storage
+Status:        Pending
+Volume:        
+Labels:        <none>
+Annotations:   <none>
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      
+Access Modes:  
+VolumeMode:    Filesystem
+Used By:       <none>
+Events:
+  Type    Reason                Age                 From                         Message
+  ----    ------                ----                ----                         -------
+  Normal  WaitForFirstConsumer  11s (x9 over 2m2s)  persistentvolume-controller  waiting for first consumer to be created before binding
+
+Reason
+The Storage Class called local-storage makes use of VolumeBindingMode set to WaitForFirstConsumer. 
+This will delay the binding and provisioning of a PersistentVolume until a Pod using the PersistentVolumeClaim is created.
+
+Create a new pod called nginx with the image nginx:alpine. The Pod should make use of the PVC local-pvc and mount the volume at the path /var/www/html.
+
+The PV local-pv should in a bound state.
+check:
+
+Pod created with the correct Image?
+Pod uses PVC called local-pvc?
+local-pv bound?
+nginx pod running?
+Volume mounted at the correct path?
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    volumeMounts:
+      - name: local-persistent-storage
+        mountPath: /var/www/html
+  volumes:
+    - name: local-persistent-storage
+      persistentVolumeClaim:
+        claimName: local-pvc
 ====================
+Create a new Storage Class called delayed-volume-sc that makes use of the below specs:
+
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: delayed-volume-sc
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+======================================================
 
 why u need volumes in kubernetes
  u have database application what need to store data.
