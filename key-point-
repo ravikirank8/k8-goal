@@ -144,4 +144,13 @@ spec:
             - matchExpressions:
               - key: node-role.kubernetes.io/control-plane
                 operator: Exists
+                
+                ====================
+                demonsets are same replicaset where pod runs on everynode . in deamone we need kind as deamonset,add namespace
+                
+                 kubectl get daemonsets --all-namespaces
+                 kubectl get all --all-namespaces
+                 
+                 On how many nodes are the pods scheduled by the DaemonSet kube-proxy?
+                 kubectl describe daemonset kube-proxy --namespace=kube-system
 
