@@ -146,7 +146,7 @@ spec:
                 operator: Exists
                 
                 ====================
-                demonsets are same replicaset where pod runs on everynode . in deamone we need kind as deamonset,add namespace
+                demonsets are same replicaset where pod runs on everynode . in deamone we need kind as deamonset,add namespace and remove replicas
                 
                  kubectl get daemonsets --all-namespaces
                  kubectl get all --all-namespaces
