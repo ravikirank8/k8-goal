@@ -1,4 +1,6 @@
-
+kubectl top pod --sort-by='memory'
+ kubectl top pod --sort-by='memory' --no-headers | head -1
+ kubectl get pod 
 Inspect the environment and identify the authorization modes configured on the cluster.
  kubectl describe  po kube-apiserver-controlplane  -n kube-system
 Use the command kubectl describe pod kube-apiserver-controlplane -n kube-system and look for --authorization-mode
