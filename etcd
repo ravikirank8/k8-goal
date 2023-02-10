@@ -31,3 +31,11 @@ Similarly use the help option for snapshot restore to see all available options 
 etcdctl snapshot restore -h
 
 For a detailed explanation on how to make use of the etcdctl command line tool and work with the -h flags, check out the solution video for the Backup and Restore Lab.
+
+Where is the ETCD CA Certificate file located?
+Check the ETCD pod configuration with the command: kubectl describe pod etcd-controlplane -n kube-system and look for the value of --trusted-ca-file:
+
+root@controlplane:~# kubectl -n kube-system describe pod etcd-controlplane | grep '\--trusted-ca-file'
+      --trusted-ca-file=/etc/kubernetes/pki/etcd/ca
+      
+      
