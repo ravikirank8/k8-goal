@@ -1,0 +1,13 @@
+kubectl config view --kubeconfig my-kube-config
+
+I would like to use the dev-user to access test-cluster-1. Set the current context to the right one so I can do that.
+Once the right context is identified, use the kubectl config use-context command.
+
+To use that context, run the command: kubectl config --kubeconfig=/root/my-kube-config use-context research
+To know the current context, run the command: kubectl config --kubeconfig=/root/my-kube-config current-context
+
+controlplane ~ ➜  kubectl config --kubeconfig=/root/my-kube-config use-context research
+Switched to context "research".
+
+controlplane ~ ➜  kubectl config --kubeconfig=/root/my-kube-config current-context
+research
