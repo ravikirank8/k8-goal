@@ -48,6 +48,7 @@ roleRef:
   
   ResourcenAME: TO APPLY RESOURCE TO CERTAIN PODS ONLY
    kubectl describe  role -n blue
+   EDIT ROLES  IN ROLES 
 Name:         developer
 Labels:       <none>
 Annotations:  <none>
