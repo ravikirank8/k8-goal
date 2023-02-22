@@ -258,3 +258,56 @@ kubectl create secret docker-registry private-reg-cred --docker-username=dock_us
 The User ID defined in the securityContext of the POD is carried over to all the containers in the Pod
 
 
+===================================
+
+clusterroles and clusterrolebindings
+
+controlplane ~ ✖ kubectl describe clusterroles cluster-admin
+Name:         cluster-admin
+Labels:       kubernetes.io/bootstrapping=rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate: true
+PolicyRule:
+  Resources  Non-Resource URLs  Resource Names  Verbs
+  ---------  -----------------  --------------  -----
+  *.*        []                 []              [*]
+             [*]                []              [*]
+
+controlplane ~ ➜  kubectl describe clusterrolebindings cluster-admin
+Name:         cluster-admin
+Labels:       kubernetes.io/bootstrapping=rbac-defaults
+Annotations:  rbac.authorization.kubernetes.io/autoupdate: true
+Role:
+  Kind:  ClusterRole
+  Name:  cluster-admin
+Subjects:
+  Kind   Name            Namespace
+  ----   ----            ---------
+  Group  system:masters 
+  
+  question
+  
+  A new user michelle joined the team. She will be focusing on the nodes in the cluster.
+  Create the required ClusterRoles and ClusterRoleBindings so she gets access to the nodes.
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
