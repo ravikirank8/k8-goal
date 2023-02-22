@@ -1,3 +1,74 @@
+question : 
+reate the necessary roles and role bindings required for the dev-user to create, list and delete pods in the default namespace.
+
+Use the given spec:
+Role: developer
+
+Role Resources: pods
+
+Role Actions: list
+
+Role Actions: create
+
+Role Actions: delete
+
+RoleBinding: dev-user-binding
+
+RoleBinding: Bound to dev-use
+
+a)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: developer
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["create", "delete", "list"]
+  
+  apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+# You need to already have a Role named "pod-reader" in that namespace.
+kind: RoleBinding
+metadata:
+  name: dev-user-binding
+  namespace: default
+subjects:
+# You can specify more than one "subject"
+- kind: User
+  name: dev-user # "name" is case sensitive
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  # "roleRef" specifies the binding to a Role / ClusterRole
+  kind: Role #this must be Role or ClusterRole
+  name: developer # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
+  
+  
+  ResourcenAME: TO APPLY RESOURCE TO CERTAIN PODS ONLY
+   kubectl describe  role -n blue
+Name:         developer
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources  Non-Resource URLs  Resource Names   Verbs
+  ---------  -----------------  --------------   -----
+  pods       []                 [blue-app]       [get watch create delete]
+  pods       []                 [dark-blue-app]  [get watch create delete]
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  =================================
+
+
+
 kubectl top pod --sort-by='memory'
  kubectl top pod --sort-by='memory' --no-headers | head -1
  kubectl get pod 
