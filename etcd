@@ -1,5 +1,15 @@
 etcdctl is a command line client for etcd.
 
+etcd server certificate : --cert-file=/etc/kubernetes/pki/etcd/server.crt
+
+Where is the ETCD CA Certificate file located?
+
+Where is the ETCD CA Certificate file located?
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    
+    
+
+
 In all our Kubernetes Hands-on labs, the ETCD key-value database is deployed as a static pod on the master. The version used is v3.
 
 To make use of etcdctl for tasks such as back up and restore, make sure that you set the ETCDCTL_API to 3.
