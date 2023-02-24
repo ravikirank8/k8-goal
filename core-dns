@@ -44,4 +44,11 @@ spec:
         
         From the hr pod nslookup the mysql service and redirect the output to a file /root/CKA/nslookup.out
         kubectl exec -it hr -- nslookup mysql.payroll > /root/CKA/nslookup.out
+        
+kubectl exec -it hr -- nslookup mysql.payroll 
+Server:         10.96.0.10
+Address:        10.96.0.10#53
+
+Name:   mysql.payroll.svc.cluster.local
+Address: 10.109.26.195
 
