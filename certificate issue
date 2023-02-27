@@ -53,3 +53,54 @@ E0916 14:19:48.689303       1 run.go:74] "command failed" err="context deadline 
 This indicates an issue with the ETCD CA certificate used by the kube-apiserver. Correct it to use the file /etc/kubernetes/pki/etcd/ca.crt.
 
 Once the YAML file has been saved, wait for the kube-apiserver pod to be Ready. This can take a couple of minutes.
+
+
+=============================================================================================================================================
+
+certificated API
+role and bing may expected tough questions
+
+create a CertificateSigningRequest object with the name akshay with the contents of the akshay.csr file
+
+As of kubernetes 1.19, the API to use for CSR is certificates.k8s.io/v1.
+
+Please note that an additional field called signerName should also be added when creating CSR. For client authentication to the API server
+we will use the built-in signer kubernetes.io/kube-apiserver-client.
+
+Use this command to generate the base64 encoded format as following: -
+
+answer: copy from kubernetes doc 
+https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/ 
+and make changes
+
+
+cat akshay.csr | base64 -w 0
+Finally, save the below YAML in a file and create a CSR name akshay as follows: -
+
+---
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: akshay
+spec:
+  groups:
+  - system:authenticated
+  request: <Paste the base64 encoded value of the CSR file>
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+
+
+kubectl apply -f akshay-csr.yaml
+
+
+and next check kubectl get csr (pending or apporved)
+
+kubectl certificate approve myuser
+
+Hmmm.. You are not aware of a request coming in. What groups is this CSR requesting access to?
+Check the details about the request. Preferebly in YAML.
+
+kubectl get  csr agent-smith -o yaml
+
+
