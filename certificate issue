@@ -1,0 +1,55 @@
+Kubectl suddenly stops responding to your commands. Check it out! Someone recently modified the /etc/kubernetes/manifests/etcd.yaml file
+
+You are asked to investigate and fix the issue. Once you fix the issue wait for sometime for kubectl to respond. Check the logs of the ETCD container.
+
+tip : go to original documention serach for pki(orignal certificate paths 
+1)issue may cert path incorrect
+check correct path is used or not example etcd-cafile search in pki docs and match the certificate
+check the original path and match with missing
+Use check crictl ps -a and crictl logs container-id
+somegoes wrong with kubectl and pods info check kube-api and etcd and its certificates
+check correct path is used or not example etcd-cafile search in pki docs and match the certificate
+
+a)
+
+controlplane /etc/kubernetes ➜  grep -i /etc/kubernetes/pki/etcd* /etc/kubernetes/manifests/etcd.yaml 
+    - --cert-file=/etc/kubernetes/pki/etcd/server-certificate.crt
+    - --key-file=/etc/kubernetes/pki/etcd/server.key
+    - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+    - --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
+    - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    - mountPath: /etc/kubernetes/pki/etcd
+      path: /etc/kubernetes/pki/etcd
+
+controlplane /etc/kubernetes ➜  cat /etc/kubernetes/pki/etcd/server-certificate.crt
+cat: /etc/kubernetes/pki/etcd/server-certificate.crt: No such file or directory
+
+controlplane /etc/kubernetes ✖ cat /etc/kubernetes/pki/etcd/server.crt -----BEGIN CERTIFICATE-----
+MIIDTzCCAjegAwIBAgIITOVf06BOxSkwDQYJKoZIhvcNAQELBQAwEjEQMA4GA1UE
+AxMHZXRjZC1jYTAeFw0yMzAyMjcwOTUyNDhaFw0yNDAyM
+
+=========
+
+2q)
+
+The kube-api server stopped again! Check it out. Inspect the kube-api server logs and identify the root cause and fix the issue.
+
+Run crictl ps -a command to identify the kube-api server container. Run crictl logs container-id command to view the logs.
+
+The kube-api server stopped again! Check it out. Inspect the kube-api server logs and identify the root cause and fix the issue.
+
+Run crictl ps -a command to identify the kube-api server container. Run crictl logs container-id command to view the logs.
+
+If we inspect the kube-apiserver container on the controlplane, we can see that it is frequently exiting.
+
+root@controlplane:~# crictl ps -a | grep kube-apiserver
+1fb242055cff8       529072250ccc6       About a minute ago   Exited              kube-apiserver            3                   ed2174865a416       kube-apiserver-controlplane
+If we now inspect the logs of this exited container, we would see the following errors:
+
+root@controlplane:~# crictl logs --tail=2 1fb242055cff8  
+W0916 14:19:44.771920       1 clientconn.go:1331] [core] grpc: addrConn.createTransport failed to connect to {127.0.0.1:2379 127.0.0.1 <nil> 0 <nil>}. Err: connection error: desc = "transport: authentication handshake failed: x509: certificate signed by unknown authority". Reconnecting...
+E0916 14:19:48.689303       1 run.go:74] "command failed" err="context deadline exceeded"
+This indicates an issue with the ETCD CA certificate used by the kube-apiserver. Correct it to use the file /etc/kubernetes/pki/etcd/ca.crt.
+
+Once the YAML file has been saved, wait for the kube-apiserver pod to be Ready. This can take a couple of minutes.
