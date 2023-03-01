@@ -1,3 +1,10 @@
+os-upgrade
+kubectl drain node01 - removed pods
+kubectl cordon node01 - unschudele
+kubectl uncordon node01 - schedule it
+unless there is taint plain if u drain a node pods never get back. it only ready to server new pods
+
+
 kubelet should update manually 
 
 apiserver should be in higher version when you upgrades
