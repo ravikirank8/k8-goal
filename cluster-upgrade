@@ -121,6 +121,48 @@ The following packages will be upgraded:
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+=====================
+Upgrade the worker node to the exact version v1.26.0
+
+Worker Node Upgraded to v1.26.0
+Worker Node Ready
+
+
+On the node01 node, run the following commands:
+
+If you are on the controlplane node, run ssh node01 to log in to the node01.
+
+
+
+This will update the package lists from the software repository.
+
+apt-get update
+
+
+This will install the kubeadm version 1.26.0.
+
+apt-get install kubeadm=1.26.0-00
+
+
+This will upgrade the node01 configuration.
+
+kubeadm upgrade node
+
+
+This will update the kubelet with the version 1.26.0.
+
+apt-get install kubelet=1.26.0-00 
+
+
+You may need to reload the daemon and restart kubelet service after it has been upgraded.
+
+systemctl daemon-reload
+systemctl restart kubelet
+
+
+Type exit or logout or enter CTRL + d to go back to the controlplane node.
+
+
 
 
 
