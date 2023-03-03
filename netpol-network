@@ -15,4 +15,4 @@ Spec:
   Not affecting egress traffic
   Policy Types: Ingress
   
-  check pod selector - payroll
+  check pod selector - payroll.
