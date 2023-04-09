@@ -1,3 +1,7 @@
+kubectl get pods -o wide and you will see that there is a single pod scheduled on node01 which is not part of a replicaset.
+
+The drain command will not work in this case. To forcefully drain the node we now have to use the --force flag
+
 OS Upgrades
 kubectl drain node-1
 kubectl cordon node-2
