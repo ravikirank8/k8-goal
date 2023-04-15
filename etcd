@@ -356,5 +356,18 @@ Step 6 (optional): It is recommended to restart controlplane components (e.g. ku
 
 =====================================
 Differed way accessing etcd
+1) kubectl get po -n kube-system
+his means that ETCD is set up as a Stacked ETCD Topology where the distributed data storage cluster provided by etcd is stacked on top of the cluster formed by the nodes managed by kubeadm that run control plane components.
+
+2) kubectl describe  po  kube-apiserver-cluster2-controlplane -n kube-system
+externaletcd
+
+
+What is the default data directory used the for ETCD datastore used in cluster2?
+Remember, this cluster uses an External ETCD topology
+
+How many nodes are part of the ETCD cluster that etcd-server is a part of?
+member list
+f0f805fc97008de5, started, etcd-server, https://10.1.218.3:2380, https://10.1.218.3:2379, false
 
 
