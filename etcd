@@ -1,3 +1,6 @@
+kubectl config view
+kubectl config use-context cluster2 you will different node in each cluster
+
 etcdctl is a command line client for etcd.
 
 etcd server certificate : --cert-file=/etc/kubernetes/pki/etcd/server.crt
@@ -35,15 +38,6 @@ Also, there is NO static pod configuration for etcd under the static pod path:
 
 student-node ~ ✖ ssh cluster2-controlplane
 Welcome to Ubuntu 18.04.6 LTS (GNU/Linux 5.4.0-1086-gcp x86_64)
-
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/advantage
-This system has been minimized by removing packages and content that are
-not required on a system that users do not log into.
-
-To restore this content, you can run the 'unminimize' command.
-Last login: Wed Aug 31 05:05:04 2022 from 10.1.127.14
 
 cluster2-controlplane ~ ➜  ls /etc/kubernetes/manifests/ | grep -i etcd
 
@@ -358,5 +352,9 @@ etcd-server ~ ➜  systemctl restart etcd
 etcd-server ~ ➜  
 
 Step 6 (optional): It is recommended to restart controlplane components (e.g. kube-scheduler, kube-controller-manager, kubelet) to ensure that they don't rely on some stale data.
+
+
+=====================================
+Differed way accessing etcd
 
 
