@@ -134,6 +134,21 @@ the set of rules you configure is called as Ingress Resources. Ingress resources
 created using definition files like the ones we used to create PODs, Deployments and
 services earlier in this course.
 
+
+
+In Kubernetes, an ingress is a set of rules that allow inbound connections to reach services running in a cluster
+
+Think of it as a traffic controller that sits between the outside world and your cluster. 
+When a user or an external system sends a request to access a specific service, the ingress will route the traffic to the appropriate service based on the 
+defined rules. 
+
+Ingress rules specify the host name, path, and backend service for each incoming request.
+For example, an ingress rule could say that any request coming to "example.com/api" should be routed to the "api-service" running in the cluster. 
+
+In addition to routing traffic, ingress also provides features such as SSL termination, load balancing, and name-based virtual hosting. 
+
+Overall, ingress is a powerful tool that enables you to expose your Kubernetes services to the internet and manage incoming traffic efficiently.
+
 Now remember a kubernetes cluster does NOT come with an Ingress Controller by
 default. If you setup a cluster following the demos in this course, you won’t have an
 Now
@@ -337,3 +352,4 @@ Namespace: ingress-space
 Use the right selector
 
 Use the command kubectl expose -n ingress-space deployment ingress-controller --type=NodePort --port=80 --name=ingress --dry-run=client -o yaml > ingress.yaml and manually add the given node port and namespace.
+
