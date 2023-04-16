@@ -24,3 +24,27 @@ Let's look at the different components within the k8s cluster and identify the v
 
 etcd,kube-api and kubelet are server certificates remaing all are client certificates
 
+==================
+
+Generating certificates
+
+Certificate Authority (CA)
+
+CertificateSigningRequest (CSR)
+
+Generate Keys
+openssl genrsa -out ca.key 2048
+
+Generate CSR
+openssl req -new -key ca.key -subj "/CN=KUBERNETES-CA" -out ca.csr
+
+Sign certificates
+ openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt
+ 
+ Client services only sign is different
+openssl x509 -req -in admin.csr -CA ca.crt -CA key ca.key -out admin.crt
+
+Certificate with admin privilages
+$ openssl req -new -key admin.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
+
+
