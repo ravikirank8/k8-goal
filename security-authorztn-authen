@@ -1,0 +1,26 @@
+Who can access the API Server is defined by the Authentication mechanisms. - Authentication
+Once they gain access to the cluster, what they can do is defined by authorization mechanisms. - authorization
+
+cluster and components communication is secured using TLS encryption. TLS encryption
+What about communication between applications within the cluster? - Network policies
+
+All user access is managed by apiserver and all of the requests goes through apiserver.
+useraccounts called as service accounts
+
+check kube-api service account --basic-auth=user.csv
+
+=============
+
+Symmetric Encryption
+It is a secure way of encryption, but it uses the same key to encrypt and decrypt the data and the key has to be exchanged between the sender and the receiver, 
+there is a risk of a hacker gaining access to the key and decrypting the data.
+
+Asymmetric Encryption
+Instead of using single key to encrypt and decrypt data, asymmetric encryption uses a pair of keys, a private key and a public key.
+
+Let's look at the different components within the k8s cluster and identify the various servers and clients and who talks to whom.
+.key is private key
+.crt is public key
+
+etcd,kube-api and kubelet are server certificates remaing all are client certificates
+
